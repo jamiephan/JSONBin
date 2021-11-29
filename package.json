@@ -1,0 +1,23 @@
+{
+  "name": "JSONBin",
+  "version": "1.0.0",
+  "description": "A Paste Bin for JSON 👀",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jamiephan/JSONBin.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jamiephan/JSONBin/issues"
+  },
+  "homepage": "https://github.com/jamiephan/JSONBin#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
