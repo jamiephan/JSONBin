@@ -10,6 +10,16 @@ app.use((req, res, next) => {
 })
 
 app.use(express.json({ limit: "1mb" }))
+
+// Check JSON validity
+app.use((err, req, res, next) => {
+    if (err instanceof SyntaxError) {
+        res.status(400).send({ error: 400, message: "Invalid JSON" })
+    } else {
+        next()
+    }
+})
+
 app.set("json spaces", 2)
 
 
