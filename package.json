@@ -4,7 +4,8 @@
   "description": "A Paste Bin for JSON 👀",
   "main": "index.js",
   "scripts": {
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "watch": "nodemon src/index.js"
   },
   "repository": {
     "type": "git",
