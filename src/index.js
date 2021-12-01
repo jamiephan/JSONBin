@@ -16,18 +16,8 @@ app.use("/api/user", require("./routes/api/user"))
 app.use("/api/bin", require("./routes/api/bin"))
 app.use("/api/debug", require("./routes/api/debug"))
 
-
-// Data
-app.get("/:name", (req, res) => {
-    Bin.findOne({ name: req.params.name }, (err, bin) => {
-        if (!bin) {
-            res.status(404).send({ error: 404, message: "Bin not found" })
-        } else {
-            res.send(bin.data)
-        }
-    })
-})
-
+// Get Bin Data
+app.use("/", require("./routes/data"))
 
 // Default Response
 app.use(require("./middleware/defaultResponse"))
