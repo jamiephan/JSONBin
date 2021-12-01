@@ -26,7 +26,8 @@ module.exports = function (req, res, next) {
         }
 
         if (!user) {
-            return UserNotFoundResponse(res);
+            return UserInvalidApiKeyResponse(res)
+            // return UserNotFoundResponse(res);
         }
 
         req.user = user;
