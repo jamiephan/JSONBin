@@ -26,4 +26,11 @@ router.post("/login", passwordValidation, (req, res) => {
     res.json({ apiKey: req.user.apiKey })
 })
 
+// Renew API Key
+router.post("/renew", passwordValidation, async (req, res) => {
+    await req.user.renewApiKey();
+    res.json({ apiKey: req.user.apiKey })
+})
+
+
 module.exports = router

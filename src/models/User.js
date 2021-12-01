@@ -41,5 +41,11 @@ userSchema.methods.comparePassword = function (password) {
     return bcrypt.compareSync(password, this.password);
 }
 
+// Renew API Key
+userSchema.methods.renewApiKey = function () {
+    this.apiKey = nanoid(32);
+    return this.save();
+}
+
 const User = mongoose.model('User', userSchema);
 module.exports = User;
