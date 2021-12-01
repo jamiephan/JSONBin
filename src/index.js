@@ -1,7 +1,6 @@
 require("dotenv").config();
 const express = require("express")
 const app = express()
-const port = 8080
 
 // Mongoose connect to mongo
 const mongoose = require("mongoose");
@@ -39,7 +38,7 @@ app.get("/:name", (req, res) => {
 app.use(require("./middleware/defaultResponse"))
 
 
-// Listen at port 8080
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`)
+// Start server
+app.listen(process.env.PORT, () => {
+    console.log(`Server is running on port ${process.env.PORT}`)
 })
