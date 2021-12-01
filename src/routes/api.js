@@ -18,8 +18,8 @@ router.post("/bin", (req, res) => {
 router.post("/user", (req, res) => {
     const user = new User(req.body)
     user.save(err => {
-        if(err) {
-            if(err.code === 11000) {
+        if (err) {
+            if (err.code === 11000) {
                 res.status(400).json({
                     error: "400",
                     message: "User already exists"
@@ -31,39 +31,43 @@ router.post("/user", (req, res) => {
                 })
             }
         } else {
-            res.json({apiKey: user.apiKey})
+            res.json({ apiKey: user.apiKey })
         }
     })
 })
 
 // Login
 router.post("/user/login", (req, res) => {
-    User.findOne({email: req.body.email}, (err, user) => {
-        if(err) {
+    User.findOne({ email: req.body.email }, (err, user) => {
+        if (err) {
             res.status(400).json({
                 error: "400",
                 message: "User could not be found"
             })
         } else {
-            if(!user) {
+            if (!user) {
                 res.status(400).json({
                     error: "400",
                     message: "User could not be found"
                 })
             } else {
                 user.comparePassword(req.body.password, (err, isMatch) => {
-                    if(err) {
+                    if (err) {
                         res.status(400).json({
                             error: "400",
                             message: "User could not be found"
                         })
-                    } else {
+                    } else { }
+                })
+            }
+        }
+    })
+})
 
 
 
 
-
-// Debug route, will be removed later
+// Debug route will be removed later
 router.get("/prune", (req, res) => {
     Bin.deleteMany({}, (err) => {
         if (err) {
