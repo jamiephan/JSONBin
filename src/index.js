@@ -3,6 +3,11 @@ const express = require("express")
 const app = express()
 const port = 8080
 
+// Mongoose connect to mongo
+const mongoose = require("mongoose");
+const Bin = require("./models/bin");
+mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true });
+
 
 // Force Content-Type to be JSON
 app.use((req, res, next) => {
@@ -26,6 +31,18 @@ app.set("json spaces", 2)
 
 // API Route
 app.use("/api", require("./routes/api"))
+
+// Data
+app.get("/:name", (req, res) => {
+    Bin.findOne({ name: req.params.name }, (err, bin) => {
+        if (!bin) {
+            res.status(404).send({ error: 404, message: "Bin not found" })
+        } else {
+            res.send(bin.data)
+        }
+    })
+})
+
 
 
 // Default 404 Route
