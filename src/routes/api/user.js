@@ -2,9 +2,8 @@ const router = require('express').Router();
 const User = require('../../models/user');
 
 const UserExistResponse = require("../../Responses/UserExist");
-const UserInvalidPasswordResponse = require("../../Responses/UserInvalidPassword");
-const UserNotFoundResponse = require("../../Responses/UserNotFound");
 const ServerErrorResponse = require("../../Responses/ServerError");
+const passwordValidation = require("../../middleware/passwordValidation");
 
 // Create User
 router.post("/", (req, res) => {
@@ -23,22 +22,8 @@ router.post("/", (req, res) => {
 })
 
 // Login
-router.post("/login", (req, res) => {
-    User.findOne({ email: req.body.email }, (err, user) => {
-        if (err) {
-            return ServerErrorResponse(res);
-        }
-        if (!user) {
-            return UserNotFoundResponse(res);
-        }
-
-        if (!user.comparePassword(req.body.password)) {
-            return UserInvalidPasswordResponse(res);
-        } else {
-            res.json({ apiKey: user.apiKey })
-        }
-
-    })
+router.post("/login", passwordValidation, (req, res) => {
+    res.json({ apiKey: req.user.apiKey })
 })
 
 module.exports = router
