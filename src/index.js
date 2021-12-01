@@ -1,12 +1,7 @@
 require("dotenv").config();
+require("./mongodb").connect();
 const express = require("express")
 const app = express()
-
-// Mongoose connect to mongo
-const mongoose = require("mongoose");
-const Bin = require("./models/bin");
-mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true });
-
 
 // Middlewares
 app.use(require("./middleware/forceJSONContentType"));
@@ -36,7 +31,6 @@ app.get("/:name", (req, res) => {
 
 // Default Response
 app.use(require("./middleware/defaultResponse"))
-
 
 // Start server
 app.listen(process.env.PORT, () => {
