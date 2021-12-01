@@ -3,13 +3,16 @@ require("./mongodb").connect();
 const express = require("express")
 const app = express()
 
+
+// Disable x-powered-by header
+app.disable("x-powered-by")
+// Pretty print response JSON
+app.set("json spaces", 2)
+
 // Middlewares
 app.use(require("./middleware/forceJSONContentType"));
 app.use(express.json({ limit: "1mb" }))
 app.use(require("./middleware/checkJSONValidity"));
-
-// Pretty print response JSON
-app.set("json spaces", 2)
 
 // API Route
 app.use("/api/user", require("./routes/api/user"))

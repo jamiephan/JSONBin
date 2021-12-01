@@ -1,21 +1,20 @@
 const router = require('express').Router();
 const User = require('../../models/user');
 
+const UserExistResponse = require("../../Responses/UserExist");
+const UserInvalidPasswordResponse = require("../../Responses/UserInvalidPassword");
+const UserNotFoundResponse = require("../../Responses/UserNotFound");
+const ServerErrorResponse = require("../../Responses/ServerError");
+
 // Create User
 router.post("/", (req, res) => {
     const user = new User(req.body)
     user.save(err => {
         if (err) {
             if (err.code === 11000) {
-                res.status(400).json({
-                    error: "400",
-                    message: "User already exists"
-                })
+                return UserExistResponse(res);
             } else {
-                res.status(400).json({
-                    error: "400",
-                    message: "User could not be created"
-                })
+                return ServerErrorResponse(res);
             }
         } else {
             res.json({ apiKey: user.apiKey })
@@ -27,27 +26,18 @@ router.post("/", (req, res) => {
 router.post("/login", (req, res) => {
     User.findOne({ email: req.body.email }, (err, user) => {
         if (err) {
-            res.status(400).json({
-                error: "400",
-                message: "User could not be found"
-            })
-        } else {
-            if (!user) {
-                res.status(400).json({
-                    error: "400",
-                    message: "User could not be found"
-                })
-            } else {
-                user.comparePassword(req.body.password, (err, isMatch) => {
-                    if (err) {
-                        res.status(400).json({
-                            error: "400",
-                            message: "User could not be found"
-                        })
-                    } else { }
-                })
-            }
+            return ServerErrorResponse(res);
         }
+        if (!user) {
+            return UserNotFoundResponse(res);
+        }
+
+        if (!user.comparePassword(req.body.password)) {
+            return UserInvalidPasswordResponse(res);
+        } else {
+            res.json({ apiKey: user.apiKey })
+        }
+
     })
 })
 
