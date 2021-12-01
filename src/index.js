@@ -9,25 +9,13 @@ const Bin = require("./models/bin");
 mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true });
 
 
-// Force Content-Type to be JSON
-app.use((req, res, next) => {
-    req.headers['content-type'] = req.headers['content-type'] || 'application/json';
-    next();
-})
-
+// Middlewares
+app.use(require("./middleware/forceJSONContentType"));
 app.use(express.json({ limit: "1mb" }))
+app.use(require("./middleware/checkJSONValidity"));
 
-// Check JSON validity
-app.use((err, req, res, next) => {
-    if (err instanceof SyntaxError) {
-        res.status(400).send({ error: 400, message: "Invalid JSON" })
-    } else {
-        next()
-    }
-})
-
+// Pretty print response JSON
 app.set("json spaces", 2)
-
 
 // API Route
 app.use("/api/user", require("./routes/api/user"))
@@ -47,15 +35,11 @@ app.get("/:name", (req, res) => {
 })
 
 
+// Default Response
+app.use(require("./middleware/defaultResponse"))
 
-// Default 404 Route
-app.use((req, res) => {
-    res.status(404).json({
-        error: 404,
-        message: "Not Found"
-    })
-})
 
+// Listen at port 8080
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`)
 })
