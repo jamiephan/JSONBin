@@ -30,7 +30,10 @@ app.set("json spaces", 2)
 
 
 // API Route
-app.use("/api", require("./routes/api"))
+app.use("/api/user", require("./routes/api/user"))
+app.use("/api/bin", require("./routes/api/bin"))
+app.use("/api/debug", require("./routes/api/debug"))
+
 
 // Data
 app.get("/:name", (req, res) => {
