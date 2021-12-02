@@ -17,6 +17,7 @@ router.post("/", apiKeyValidation ,(req, res) => {
         res.json({
             name: bin.name,
             user: bin.user ? bin.user.email : null,
+            createdAt: bin.createdAt,
             data: bin.data
         })
     })

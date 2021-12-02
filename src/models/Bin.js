@@ -14,6 +14,10 @@ const binSchema = new Schema({
         type: Object,
         required: true
     },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
     user: {
         type: Schema.Types.ObjectId,
         ref: 'User',
