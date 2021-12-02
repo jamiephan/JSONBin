@@ -9,6 +9,7 @@ app.disable("x-powered-by")
 // Pretty print response JSON
 app.set("json spaces", 2)
 // HTML UI pug
+app.set("views", __dirname + "/views/")
 app.set("view engine", "pug")
 
 // Middlewares
