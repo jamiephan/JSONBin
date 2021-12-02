@@ -13,6 +13,15 @@ router.get("/:name", checkBinExist, (req, res) => {
     res.send(req.bin.data)
 })
 
+// JSON HTML Viewer
+router.get("/:name/view", checkBinExist, (req, res) => {
+    res.render("jsonViewer", {
+        name: req.bin.name,
+        data: JSON.stringify(req.bin.data, null, 2)
+    })
+
+})
+
 
 // Delete Bin data, only admin and owner can delete
 router.delete("/:name", apiKeyValidation, (req, res) => {
