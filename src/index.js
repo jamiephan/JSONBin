@@ -8,6 +8,8 @@ const app = express()
 app.disable("x-powered-by")
 // Pretty print response JSON
 app.set("json spaces", 2)
+// HTML UI pug
+app.set("view engine", "pug")
 
 // Middlewares
 app.use(express.json({ limit: "1mb", type: () => true}))
