@@ -1,5 +1,6 @@
 const express = require('express');
 const apiKeyValidation = require('../middleware/apiKeyValidation');
+const checkBinExist = require("../middleware/checkBinExist")
 const Bin = require("../models/bin");
 const NotFoundResponse = require("../Responses/NotFound");
 const InvalidApiKeyResponse = require('../responses/UserInvalidApiKey');
@@ -8,16 +9,10 @@ const router = express.Router();
 
 
 // Get Bin Data
-router.get("/:name", (req, res) => {
-    Bin.findOne({ name: req.params.name }, (err, bin) => {
-        if (!bin) {
-            return NotFoundResponse(res)
-            // res.status(404).send({ error: 404, message: "Bin not found" })
-        } else {
-            res.send(bin.data)
-        }
-    })
+router.get("/:name", checkBinExist, (req, res) => {
+    res.send(req.bin.data)
 })
+
 
 // Delete Bin data, only admin and owner can delete
 router.delete("/:name", apiKeyValidation, (req, res) => {
@@ -30,7 +25,7 @@ router.delete("/:name", apiKeyValidation, (req, res) => {
         .exec((err, bin) => {
             if (err) return ServerErrorResponse(res)
             if (!bin) return NotFoundResponse(res)
-            
+
             // Anonymous Bin
             if (bin.user === null) return InvalidApiKeyResponse(res)
 
