@@ -10,8 +10,7 @@ app.disable("x-powered-by")
 app.set("json spaces", 2)
 
 // Middlewares
-app.use(require("./middleware/forceJSONContentType"));
-app.use(express.json({ limit: "1mb" }))
+app.use(express.json({ limit: "1mb", type: "*/*" }))
 app.use(require("./middleware/checkJSONValidity"));
 
 // API Route
