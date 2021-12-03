@@ -1,39 +1,45 @@
 html
     head
-        title JSON Viewer - #{name}
+        title JSON Viewer | #{name}
         style.
             html, body {
                 margin: 0;
                 padding: 0;
             }
             #container {
-                height: 100vh;
+                height: calc(100vh - 56px);
                 overflow: hidden;
             }
-        script(src='https://unpkg.com/monaco-editor@0.30.1/min/vs/loader.js')
+            
+        link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap@latest/dist/css/bootstrap.min.css")
+        script(src="https://cdn.jsdelivr.net/npm/bootstrap@latest/dist/js/bootstrap.bundle.min.js") 
+        script(src='https://unpkg.com/monaco-editor@latest/min/vs/loader.js')
 
     body 
-        h1= title
-        div#container(style={
-            "width": "100%",
-            "height": "100%",
-        })
+        nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
+            .container-fluid
+                .navbar-brand JSON Viewer -  
+                    a(href="/" + name) #{name}
+                .d-flex
+                    button.btn.btn-secondary.me-2(type='button') Login
+                    button.btn.btn-primary(type='button') Remix!
+
+        div#container
         script.
             require.config({ paths: { 'vs': 'https://unpkg.com/monaco-editor@latest/min/vs' }});
-            window.MonacoEnvironment = { getWorkerUrl: () => proxy };
-            
-            let proxy = URL.createObjectURL(new Blob([`
-                self.MonacoEnvironment = {
-                    baseUrl: 'https://unpkg.com/monaco-editor@latest/min/'
-                };
-                importScripts('https://unpkg.com/monaco-editor@latest/min/vs/base/worker/workerMain.js');
-            `], { type: 'text/javascript' }));
-            
             require(["vs/editor/editor.main"], function () {
-                let editor = monaco.editor.create(document.getElementById('container'), {
-                    value: `!{data}`,
-                    language: 'json',
-                    theme: 'vs-dark',
-                    readOnly: true,
+                fetch("/#{name}").then(response => response.json()).then(data => {
+                    let container = document.getElementById("container");
+                    let options = {
+                        automaticLayout: true,
+                        glyphMargin: true,
+                        lineNumbers: true,
+                        readOnly: true,
+                        
+                        theme: "vs-dark",
+                        language: "json",
+                        value: JSON.stringify(data, null, 4),
+                    };
+                    let editor = monaco.editor.create(container, options);
                 });
             });
