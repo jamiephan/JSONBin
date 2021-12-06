@@ -1,6 +1,6 @@
 html
     head
-        title JSON Viewer | #{name ? name : 'New JSON'}
+        title JSONBin Viewer | #{name ? name : 'New JSON'}
         style.
             html, body {
                 margin: 0;
@@ -22,7 +22,7 @@ html
     body 
         nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
             .container-fluid
-                .navbar-brand JSON Viewer -   
+                .navbar-brand JSONBin Viewer -   
                     if (name)
                         a(href="/" + name, target="_blank", rel="noopener noreferrer") #{name}
                     else
@@ -35,8 +35,8 @@ html
                             button.btn.btn-primary.dropdown-toggle.me-2(type="button", data-bs-toggle="dropdown") Share
                             ul.dropdown-menu.dropdown-menu-dark
                                 li
-                                    a#share-link.dropdown-item(href="#") Direct Link
-                                    a#share-viewer.dropdown-item(href="#") Viewer
+                                    a#share-link.dropdown-item(href="#") JSON Link
+                                    a#share-viewer.dropdown-item(href="#") JSON Viewer
                                     //- hr.divider
                                     a#share-file.dropdown-item(href="#") File
                     button#remix-btn.btn.btn-success(type='button') Remix!
@@ -53,6 +53,7 @@ html
                 value: JSON.stringify({}, null, 4),
             };
             window.data = {}
+
         if (name)
             script.
                 require(["vs/editor/editor.main"], function () {
@@ -130,3 +131,55 @@ html
             document.getElementById("logout-btn").addEventListener("click", function() {
                 localStorage.removeItem("apiKey")
             })
+        if (name)
+            script.
+                const checkEditorContent = () => {
+                    if(!window.editor) return false
+                    if(window.editor.getValue() !== editorOption.value){
+                        alert("JSON have been changed. Please create a remix first.")
+                        return false
+                    }
+                    return true
+                }
+
+                const share = config => {
+                    if (navigator.share && 'canShare' in navigator) {
+                        navigator.share({...config})
+                        .catch((error) => {
+                            alert('Error sharing: ' + error.message);
+                            console.log(error);
+                        });
+                    } else {
+                        alert('This browser does not support sharing. Please update yor browser.')
+                    }
+                }
+
+                document.getElementById("share-link").addEventListener("click", function() {
+                    if(!checkEditorContent()) return
+                    share({
+                        title: 'JSONBin | #{name}',
+                        text: 'Click to view this JSON file',
+                        url: location.protocol + '//' + location.host + '/#{name}'
+                    })
+                    
+                })
+
+                document.getElementById("share-viewer").addEventListener("click", function() {
+                    if(!checkEditorContent()) return
+                    share({
+                        title: 'JSONBin Viewer | #{name}',
+                        text: 'Check out this JSON in the JSONBin Viewer.',
+                        url: location.protocol + '//' + location.host + '/#{name}' + '/view'
+                    })
+                })
+
+                document.getElementById("share-file").addEventListener("click", function() {
+                    if(!checkEditorContent()) return
+                    share({
+                        title: 'JSONBin File | #{name}',
+                        text: 'Click to view this JSON file',
+                        url: location.protocol + '//' + location.host + '/#{name}',
+                        files: [new File([window.editor.getValue()], "#{name}.txt", {type: 'text/plain'})],
+                        //- files: [new File([window.editor.getValue()], "#{name}.json", {type: 'application/json'})],
+                    })
+                })
