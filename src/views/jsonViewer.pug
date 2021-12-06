@@ -5,6 +5,7 @@ html
             html, body {
                 margin: 0;
                 padding: 0;
+                overflow: hidden;
             }
             #container {
                 height: calc(100vh - 56px);
@@ -22,24 +23,28 @@ html
     body 
         nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
             .container-fluid
-                .navbar-brand JSONBin Viewer -   
+                .navbar-brand JSONBin Viewer |   
                     if (name)
-                        a(href="/" + name, target="_blank", rel="noopener noreferrer") #{name}
+                        code
+                            a(href="/" + name, target="_blank", rel="noopener noreferrer") #{name}
                     else
-                        span New JSON
+                        code New JSON
                 .d-flex
-                    button#login-btn.btn.btn-secondary.me-2(type='button') Login
                     button#logout-btn.btn.btn-warning.me-2(type='button', style={display: "none"}) Logout
                     if (name)
                         .dropdown
-                            button.btn.btn-primary.dropdown-toggle.me-2(type="button", data-bs-toggle="dropdown") Share
+                            button.btn.btn-primary.dropdown-toggle.me-2(type="button", data-bs-toggle="dropdown") Export
                             ul.dropdown-menu.dropdown-menu-dark
                                 li
-                                    a#share-link.dropdown-item(href="#") JSON Link
-                                    a#share-viewer.dropdown-item(href="#") JSON Viewer
-                                    //- hr.divider
+                                    a#share-content.dropdown-item(href="#") Share JSON
+                                    a#share-link.dropdown-item(href="#") Share JSON Link
+                                    a#share-viewer.dropdown-item(href="#") Share JSON Viewer
                                     //- TODO: Fix it
                                     //- a#share-file.dropdown-item(href="#") File
+                                    hr.divider
+                                    a#download-json.dropdown-item(href="#") Download JSON
+                                    a#download-json-minify.dropdown-item(href="#") Download JSON (Minified)
+                    button#login-btn.btn.btn-secondary.me-2(type='button') Login
                     button#remix-btn.btn.btn-success(type='button') Remix!
 
         div#container Loading Editor...
@@ -174,13 +179,43 @@ html
                     })
                 })
 
-                document.getElementById("share-file").addEventListener("click", function() {
+                document.getElementById("share-content").addEventListener("click", function() {
                     if(!checkEditorContent()) return
                     share({
-                        title: 'JSONBin File | #{name}',
-                        text: 'Click to view this JSON file',
-                        url: location.protocol + '//' + location.host + '/#{name}',
-                        files: [new File([window.editor.getValue()], "#{name}.txt", {type: 'text/plain'})],
-                        //- files: [new File([window.editor.getValue()], "#{name}.json", {type: 'application/json'})],
+                        title: 'JSONBin | #{name}',
+                        text: JSON.stringify(JSON.parse(editorOption.value)),
+                        url: location.protocol + '//' + location.host + '/#{name}'
                     })
+                    
+                })
+
+                //- document.getElementById("share-file").addEventListener("click", function() {
+                //-     if(!checkEditorContent()) return
+                //-     share({
+                //-         title: 'JSONBin File | #{name}',
+                //-         text: 'Click to view this JSON file',
+                //-         url: location.protocol + '//' + location.host + '/#{name}',
+                //-         files: [new File([window.editor.getValue()], "#{name}.txt", {type: 'text/plain'})],
+                //-         //- files: [new File([window.editor.getValue()], "#{name}.json", {type: 'application/json'})],
+                //-     })
+                //- })
+
+                const downloadJSON = minified => {
+                    let data = window.editor.getValue()
+                    if(minified) data = JSON.stringify(JSON.parse(data))
+                    let a = document.createElement('a');
+                    a.href = URL.createObjectURL(new Blob([data], {type: 'application/json'}));
+                    a.download = "#{name}" + (minified ? ".min.json" : ".json");
+                    a.click()
+                    URL.revokeObjectURL(a.href);
+                }
+                
+                document.getElementById("download-json").addEventListener("click", function() {
+                    if(!checkEditorContent()) return
+                    downloadJSON(false)
+                })
+
+                document.getElementById("download-json-minify").addEventListener("click", function() {
+                    if(!checkEditorContent()) return
+                    downloadJSON(true)
                 })
