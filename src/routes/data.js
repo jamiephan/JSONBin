@@ -16,8 +16,7 @@ router.get("/:name", checkBinExist, (req, res) => {
 // JSON HTML Viewer
 router.get("/:name/view", checkBinExist, (req, res) => {
     res.render("jsonViewer", {
-        name: req.bin.name,
-        data: JSON.stringify(req.bin.data, null, 2)
+        name: req.bin.name
     })
 
 })

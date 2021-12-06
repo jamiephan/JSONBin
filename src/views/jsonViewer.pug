@@ -1,6 +1,6 @@
 html
     head
-        title JSON Viewer | #{name}
+        title JSON Viewer | #{name ? name : 'New JSON'}
         style.
             html, body {
                 margin: 0;
@@ -15,36 +15,63 @@ html
             }
             
         link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap@latest/dist/css/bootstrap.min.css")
+        script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js")
         script(src="https://cdn.jsdelivr.net/npm/bootstrap@latest/dist/js/bootstrap.bundle.min.js") 
         script(src='https://unpkg.com/monaco-editor@latest/min/vs/loader.js')
 
     body 
         nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
             .container-fluid
-                .navbar-brand JSON Viewer -  
-                    a(href="/" + name) #{name}
+                .navbar-brand JSON Viewer -   
+                    if (name)
+                        a(href="/" + name, target="_blank", rel="noopener noreferrer") #{name}
+                    else
+                        span New JSON
                 .d-flex
-                    button.btn.btn-secondary.me-2(type='button') Login
-                    button#remix-btn.btn.btn-primary(type='button') Remix!
+                    button#login-btn.btn.btn-secondary.me-2(type='button') Login
+                    button#logout-btn.btn.btn-warning.me-2(type='button', style={display: "none"}) Logout
+                    if (name)
+                        .dropdown
+                            button.btn.btn-primary.dropdown-toggle.me-2(type="button", data-bs-toggle="dropdown") Share
+                            ul.dropdown-menu.dropdown-menu-dark
+                                li
+                                    a#share-link.dropdown-item(href="#") Direct Link
+                                    a#share-viewer.dropdown-item(href="#") Viewer
+                                    //- hr.divider
+                                    a#share-file.dropdown-item(href="#") File
+                    button#remix-btn.btn.btn-success(type='button') Remix!
 
         div#container Loading Editor...
         script.
             require.config({ paths: { 'vs': 'https://unpkg.com/monaco-editor@latest/min/vs' }});
-            require(["vs/editor/editor.main"], function () {
-                fetch("/#{name}").then(response => response.json()).then(data => {
-                    let container = document.getElementById("container");
-                    let options = {
-                        automaticLayout: true,
-                        glyphMargin: true,
-                        lineNumbers: true,
-                        theme: "vs-dark",
-                        language: "json",
-                        value: JSON.stringify(data, null, 4),
-                    };
-                    container.innerHTML = "";
-                    window.editor = monaco.editor.create(container, options);
+            const editorOption = {
+                automaticLayout: true,
+                glyphMargin: true,
+                lineNumbers: true,
+                theme: "vs-dark",
+                language: "json",
+                value: JSON.stringify({}, null, 4),
+            };
+            window.data = {}
+        if (name)
+            script.
+                require(["vs/editor/editor.main"], function () {
+                    fetch("/#{name}").then(response => response.json()).then(data => {
+                        let container = document.getElementById("container");
+                        container.innerHTML = "";
+                        editorOption.value = JSON.stringify(data, null, 4);
+                        window.editor = monaco.editor.create(container, editorOption);
+                        window.data = data;
+                    });
                 });
-            });
+        else
+            script.
+                require(["vs/editor/editor.main"], function () {
+                    let container = document.getElementById("container");
+                    container.innerHTML = "";
+                    window.editor = monaco.editor.create(container, editorOption);
+                });
+        
         script.
             document.getElementById("remix-btn").addEventListener("click", function() {
                 if(!window.editor) return
@@ -64,4 +91,42 @@ html
                         alert(data.message)
                     }
                 })
+            })
+
+            document.getElementById("login-btn").addEventListener("click", function() {
+                const email = prompt("Enter your email:")
+                const password = prompt("Enter your password:")
+
+                fetch("/api/user/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+                }).then(response => response.json())
+                .then(data => {
+                    if(!data.error) {
+                        localStorage.setItem("apiKey", data.apiKey)
+                        //- window.location.href = "/" + data.name + "/view"
+                    } else {
+                        alert(data.message)
+                    }
+                })
+            })
+
+            window.addEventListener("storage", function(e) {
+                if(localStorage.getItem("apiKey")) {
+                    document.getElementById("login-btn").style.display = "none"
+                    document.getElementById("logout-btn").style.display = "block"
+                } else {
+                    document.getElementById("login-btn").style.display = "block"
+                    document.getElementById("logout-btn").style.display = "none"
+                }
+            })
+
+            document.getElementById("logout-btn").addEventListener("click", function() {
+                localStorage.removeItem("apiKey")
             })
