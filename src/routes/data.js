@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const apiKeyValidation = require('../middleware/apiKeyValidation');
 const checkBinExist = require("../middleware/checkBinExist")
 const Bin = require("../models/bin");
@@ -9,7 +10,7 @@ const router = express.Router();
 
 
 // Get Bin Data
-router.get("/:name", checkBinExist, (req, res) => {
+router.get("/:name", [checkBinExist, cors()], (req, res) => {
     res.send(req.bin.data)
 })
 
