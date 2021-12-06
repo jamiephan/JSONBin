@@ -25,8 +25,10 @@ app.use("/api/debug", require("./routes/api/debug"))
 app.use("/", require("./routes/data"))
 
 // Default Response
-app.use(require("./middleware/defaultResponse"))
-
+// app.use(require("./middleware/defaultResponse"))
+app.get("/", (req, res) => {
+    res.render("jsonViewer")
+})
 // Start server
 app.listen(process.env.PORT, () => {
     console.log(`Server is running on port ${process.env.PORT}`)
