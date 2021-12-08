@@ -16,7 +16,7 @@ const userSchema = new Schema({
     },
     apiKey: {
         type: String,
-        default: () => nanoid(process.env.apiKeyLength || 32),
+        default: () => nanoid(process.env.API_KEY_LENGTH || 32),
     },
     createdAt: {
         type: Date,
@@ -43,7 +43,7 @@ userSchema.methods.comparePassword = function (password) {
 
 // Renew API Key
 userSchema.methods.renewApiKey = function () {
-    this.apiKey = nanoid(process.env.apiKeyLength || 32);
+    this.apiKey = nanoid(process.env.API_KEY_LENGTH || 32);
     return this.save();
 }
 
