@@ -1,6 +1,6 @@
 const Bin = require("../models/bin");
-const ServerErrorResponse = require("../Responses/ServerError")
-const NotFoundResponse = require("../Responses/NotFound")
+const ServerErrorResponse = require("../responses/ServerError")
+const NotFoundResponse = require("../responses/NotFound")
 
 module.exports = function (req, res, next) {
     Bin.findOne({ name: req.params.name }, (err, bin) => {

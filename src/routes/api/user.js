@@ -2,8 +2,8 @@ const router = require('express').Router();
 const User = require('../../models/user');
 const Bin = require('../../models/bin');
 
-const UserExistResponse = require("../../Responses/UserExist");
-const ServerErrorResponse = require("../../Responses/ServerError");
+const UserExistResponse = require("../../responses/UserExist");
+const ServerErrorResponse = require("../../responses/ServerError");
 const passwordValidation = require("../../middleware/passwordValidation");
 const apiKeyValidation = require('../../middleware/apiKeyValidation');
 

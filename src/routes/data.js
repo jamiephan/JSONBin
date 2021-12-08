@@ -3,9 +3,9 @@ const cors = require('cors');
 const apiKeyValidation = require('../middleware/apiKeyValidation');
 const checkBinExist = require("../middleware/checkBinExist")
 const Bin = require("../models/bin");
-const NotFoundResponse = require("../Responses/NotFound");
+const NotFoundResponse = require("../responses/NotFound");
 const InvalidApiKeyResponse = require('../responses/UserInvalidApiKey');
-const ServerErrorResponse = require("../Responses/ServerError");
+const ServerErrorResponse = require("../responses/ServerError");
 const router = express.Router();
 
 
