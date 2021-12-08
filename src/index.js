@@ -19,7 +19,10 @@ app.use(require("./middleware/checkJSONValidity"));
 // API Route
 app.use("/api/user", require("./routes/api/user"))
 app.use("/api/bin", require("./routes/api/bin"))
-app.use("/api/debug", require("./routes/api/debug"))
+
+if(process.env.NODE_ENV !== "production") {
+    app.use("/api/debug", require("./routes/api/debug"))
+}
 
 // Get Bin Data
 app.use("/", require("./routes/data"))
