@@ -27,11 +27,14 @@ if(process.env.NODE_ENV !== "production") {
 // Get Bin Data
 app.use("/", require("./routes/data"))
 
-// Default Response
-// app.use(require("./middleware/defaultResponse"))
+// Root Response
 app.get("/", (req, res) => {
     res.render("jsonViewer")
 })
+
+// Default 404 Response
+app.use(require("./middleware/defaultResponse"))
+
 // Start server
 app.listen(process.env.PORT, () => {
     console.log(`Server is running on port ${process.env.PORT}`)
