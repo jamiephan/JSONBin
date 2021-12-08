@@ -79,6 +79,7 @@ html
                 require(["vs/editor/editor.main"], function () {
                     let container = document.getElementById("container");
                     container.innerHTML = "";
+                    container.style.paddingLeft = "0px";
                     window.editor = monaco.editor.create(container, editorOption);
                 });
         
