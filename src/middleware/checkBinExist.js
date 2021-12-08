@@ -1,4 +1,4 @@
-const Bin = require("./../models/bin");
+const Bin = require("../models/bin");
 const ServerErrorResponse = require("../Responses/ServerError")
 const NotFoundResponse = require("../Responses/NotFound")
 

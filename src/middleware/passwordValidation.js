@@ -1,5 +1,5 @@
 // Express Middleware to check if email/password are valid
-const User = require("./../models/user");
+const User = require("../models/user");
 const UserNotFoundResponse = require("./../responses/UserNotFound");
 const ServerErrorResponse = require("./../responses/ServerError");
 const UserInvalidPasswordResponse = require("./../responses/UserInvalidPassword");
