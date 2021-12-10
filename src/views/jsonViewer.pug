@@ -72,6 +72,14 @@ html
                         editorOption.value = JSON.stringify(data, null, 4);
                         window.editor = monaco.editor.create(container, editorOption);
                         window.data = data;
+                        window.editor.onDidChangeModelContent(e => {
+                            let value = JSON.parse(editor.getValue(), null, 4);
+                            if(value === editorOption.value) {
+                                window.onbeforeunload = () => null;
+                            } else {
+                                window.onbeforeunload = () => true
+                            }
+                        });
                     });
                 });
         else
@@ -81,6 +89,14 @@ html
                     container.innerHTML = "";
                     container.style.paddingLeft = "0px";
                     window.editor = monaco.editor.create(container, editorOption);
+                    window.editor.onDidChangeModelContent(e => {
+                            let value = JSON.parse(editor.getValue(), null, 4);
+                            if(value === editorOption.value) {
+                                window.onbeforeunload = () => null;
+                            } else {
+                                window.onbeforeunload = () => true
+                            }
+                        });
                 });
         
         script.
@@ -92,11 +108,12 @@ html
                     headers: {
                         "Content-Type": "application/json"
                     },
-                    body: data
+                    body: data  
                 })
                 .then(response => response.json())
                 .then(data => {
                     if(!data.error) {
+                        window.onbeforeunload = () => null;
                         window.location.href = "/" + data.name + "/view"
                     } else {
                         alert(data.message)
